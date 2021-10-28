@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link  href="https://fonts.googleapis.com/css2?family=Codystar&family=Source+Code+Pro:wght@200;300;400&display=swap" rel="stylesheet">
+</head>
+
+<style>
+    body {
+        font-family: monospace;
+    }
+</style>
+
+<body>
+    <div id="elm"></div>
+    <!-- <button id="start-button">Start</button>
+         <button id="rec-button">Record</button>
+         <button id="stop-button">Stop</button> -->
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/essentia.js@0.1.0/dist/essentia-wasm.web.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/essentia.js@0.1.0/dist/essentia.js-core.js"></script>
+<script src="dist/bundle.js"></script>
+<script src="dist/elm.js"></script>
+
+<script>
+
+ 
+ window.onload = async function () {
+
+     var app = Elm.Main.init({ node: document.getElementById('elm') })
+     
+     setInterval(() => {
+	 app.ports.receiveState.send(Main.info());
+     }, 250);
+
+     app.ports.start.subscribe(function() {
+         Main.start(b => app.ports.started.send(b));
+     });
+
+     app.ports.record.subscribe(function() {
+         Main.record((t) => app.ports.receiveRecordingTime.send(t),
+                     b => app.ports.started.send(b));
+     });
+
+
+     app.ports.openMic.subscribe(function() {
+         Main.openMic((l) => app.ports.receiveMicLevel.send(l),
+                     b => app.ports.allowRecording.send(b));
+     });
+
+
+ };
+
+ 
+</script>
+
+</html>
